@@ -1,0 +1,28 @@
+//@version=6
+// 今日のFX戦略 — 価格レベル描画インジケーター
+// 使い方: TradingView → Pineエディタ に貼り付け → 「チャートに追加」
+//         設定(歯車)から毎日のレベルを更新する。
+// ※ strategies/日付.md の「注目価格帯・ライン」から数値を転記する想定。
+
+indicator("今日のFX戦略レベル", overlay = true)
+
+g = "戦略レベル（毎日更新）"
+sellHi = input.float(162.50, "戻り売りゾーン上限", group = g)
+sellLo = input.float(162.20, "戻り売りゾーン下限", group = g)
+target = input.float(160.30, "下値ターゲット",     group = g)
+key1   = input.float(0.0,    "節目1（0=非表示）",  group = g)
+key2   = input.float(0.0,    "節目2（0=非表示）",  group = g)
+
+// --- 水平線 ---
+hline(sellHi, "戻り売り上限", color = color.red,   linestyle = hline.style_dashed)
+hline(sellLo, "戻り売り下限", color = color.red,   linestyle = hline.style_dotted)
+hline(target, "下値ターゲット", color = color.green, linestyle = hline.style_dashed)
+hline(key1 != 0.0 ? key1 : na, "節目1", color = color.gray, linestyle = hline.style_dotted)
+hline(key2 != 0.0 ? key2 : na, "節目2", color = color.gray, linestyle = hline.style_dotted)
+
+// 戻り売りゾーンを薄く塗る
+fill(hline(sellHi), hline(sellLo), color = color.new(color.red, 90), title = "戻り売りゾーン")
+
+// --- アラート（サテライト＝のぶ塾型の節目用） ---
+alertcondition(ta.crossover(close, sellLo),  title = "戻り売りゾーン到達", message = "価格が戻り売りゾーンに到達しました")
+alertcondition(ta.crossunder(close, target), title = "下値ターゲット到達", message = "価格が下値ターゲットに到達しました")

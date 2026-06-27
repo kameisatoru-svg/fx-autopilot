@@ -17,6 +17,9 @@ dist-ssr
 __pycache__/
 *.pyc
 
+# 生成された要約の出力
+scripts/summaries/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

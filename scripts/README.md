@@ -20,7 +20,25 @@ export ANTHROPIC_API_KEY="sk-ant-..."   # Windows(PowerShell): $env:ANTHROPIC_AP
 
 API キーは https://console.anthropic.com/ で発行できます。
 
-## 使い方
+## いちばん簡単な使い方（Windows・ダブルクリック1発）
+
+毎回コマンドを打たずに、アイコンのダブルクリックだけで要約できます。
+
+事前準備（初回だけ）:
+1. 上の「セットアップ」を済ませる
+2. API キーを永続設定する（1回だけ）。実行後、PowerShell を開き直す:
+   ```powershell
+   setx ANTHROPIC_API_KEY "sk-ant-自分のキー"
+   ```
+
+毎回の流れ:
+1. ブラウザで動画の「文字起こしを表示」→ テキストを全部コピー
+2. `scripts` フォルダの **`summarize.bat` をダブルクリック**
+3. 要約が自動で作られ、`scripts\summaries\日時.txt` に保存され、メモ帳で開く
+
+> メンバーシップ限定の動画でも、ログイン済みブラウザでコピーするので問題なく要約できます。
+
+## 使い方（コマンドで細かく操作したいとき）
 
 ```bash
 # YouTube の URL（または 11 文字の動画ID）から取得して要約

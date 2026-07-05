@@ -1,0 +1,41 @@
+//@version=6
+// 今日のFX戦略 — セットアップ・レベル描画インジケーター
+// 使い方: TradingView → Pineエディタ に貼り付け → 「チャートに追加」
+//         設定(歯車)→入力 で、その日のレベルを更新する。
+// 初期値: 2026-06-28 USD/JPY 4H（コア＝押し目買いセットアップ）
+//   ・押し目買いゾーン: 160.35〜160.54（Golden Pocket＋FVG）
+//   ・ターゲット: 161.928 / 162.096
+//   ・補助: 160.879（トレンドライン）
+//   ・無効化: 159.536 割れで4H上昇構造が崩壊
+
+indicator("今日のFX戦略レベル", overlay = true)
+
+g1 = "押し目買いゾーン"
+zoneHi = input.float(160.54, "ゾーン上限", group = g1)
+zoneLo = input.float(160.35, "ゾーン下限", group = g1)
+
+g2 = "ターゲット／補助（0=非表示）"
+tp1 = input.float(161.928, "ターゲット1", group = g2)
+tp2 = input.float(162.096, "ターゲット2", group = g2)
+sup = input.float(160.879, "補助ライン",   group = g2)
+
+g3 = "無効化ライン"
+inval = input.float(159.536, "無効化（割れで消滅）", group = g3)
+
+// --- 押し目買いゾーン（塗りつぶし）---
+hHi = hline(zoneHi, "ゾーン上限", color = color.green, linestyle = hline.style_dotted)
+hLo = hline(zoneLo, "ゾーン下限", color = color.green, linestyle = hline.style_dotted)
+fill(hHi, hLo, color = color.new(color.green, 85), title = "買いゾーン")
+
+// --- ターゲット／補助 ---
+hline(tp1 != 0.0 ? tp1 : na, "ターゲット1", color = color.red,  linestyle = hline.style_dashed)
+hline(tp2 != 0.0 ? tp2 : na, "ターゲット2", color = color.red,  linestyle = hline.style_dashed)
+hline(sup != 0.0 ? sup : na, "補助ライン",   color = color.gray, linestyle = hline.style_dotted)
+
+// --- 無効化ライン ---
+hline(inval, "無効化ライン", color = color.fuchsia, linestyle = hline.style_solid)
+
+// --- アラート ---
+alertcondition(ta.crossunder(low, zoneHi),   title = "買いゾーン進入",   message = "価格が押し目買いゾーンに進入しました")
+alertcondition(ta.crossunder(close, inval),  title = "無効化ライン割れ", message = "無効化ラインを割れました。セットアップ消滅。")
+alertcondition(ta.crossover(high, tp1),      title = "ターゲット1到達",   message = "ターゲット1に到達しました")

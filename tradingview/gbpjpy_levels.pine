@@ -1,0 +1,32 @@
+//@version=6
+// GBP/JPY 戦略レベル（押し目買いセットアップ）— 2026-06-29 4H
+// 買いゾーン: 213.05〜213.36（のぶ塾213.10 ≈ Copilot S2 213.05 / S1 213.36）
+// ターゲット: R1 213.71 / R2 213.86 / R3 214.23 ／ 無効化: 212.93（S3 LL）
+// 使い方: Pineエディタを Ctrl+A→Delete で空にしてから貼り付け → チャートに追加。
+
+indicator("GBPJPY 戦略レベル", overlay = true)
+
+g1 = "押し目買いゾーン"
+zoneHi = input.float(213.36, "ゾーン上限(S1 TL+Fib0.382)",      group = g1)
+zoneLo = input.float(213.05, "ゾーン下限(S2 Fib0.236≈のぶ塾213.10)", group = g1)
+
+g2 = "ターゲット（0=非表示）"
+t1 = input.float(213.71, "T1 R1(LH)",       group = g2)
+t2 = input.float(213.86, "T2 R2(Fib0.618)", group = g2)
+t3 = input.float(214.23, "T3 R3(HH)",       group = g2)
+
+g3 = "無効化ライン"
+inval = input.float(212.93, "無効化(S3 LL割れ)", group = g3)
+
+hHi = hline(zoneHi, "ゾーン上限", color = color.green, linestyle = hline.style_dotted)
+hLo = hline(zoneLo, "ゾーン下限", color = color.green, linestyle = hline.style_dotted)
+fill(hHi, hLo, color = color.new(color.green, 85), title = "買いゾーン")
+
+hline(t1 != 0.0 ? t1 : na, "T1", color = color.red, linestyle = hline.style_dashed)
+hline(t2 != 0.0 ? t2 : na, "T2", color = color.red, linestyle = hline.style_dotted)
+hline(t3 != 0.0 ? t3 : na, "T3", color = color.red, linestyle = hline.style_dotted)
+hline(inval, "無効化ライン", color = color.fuchsia, linestyle = hline.style_solid)
+
+alertcondition(ta.crossunder(low, zoneHi),  title = "買いゾーン進入", message = "GBPJPY 押し目買いゾーン(213.36)に進入")
+alertcondition(ta.crossunder(close, inval), title = "無効化割れ",     message = "GBPJPY 無効化(212.93)割れ。セットアップ消滅。")
+alertcondition(ta.crossover(high, t1),      title = "T1到達",         message = "GBPJPY T1(213.71)到達")

@@ -1,0 +1,29 @@
+//@version=6
+// EUR/JPY 戦略レベル（レンジ版） — 2026-06-28 4H
+// Chart Copilot の6レベル（R3/R2/R1・S1/S2/S3）を水平線＋ブレイクアラートで表示。
+// 使い方: Pineエディタを Ctrl+A→Delete で空にしてから貼り付け → チャートに追加。
+
+indicator("EURJPY 戦略レベル", overlay = true)
+
+gr = "レジスタンス（0=非表示）"
+r1 = input.float(184.55, "R1 戻り壁(Fib0.618)", group = gr)
+r2 = input.float(185.04, "R2 直近高値",        group = gr)
+r3 = input.float(185.79, "R3 期間高値",        group = gr)
+
+gs = "サポート（0=非表示）"
+s1 = input.float(184.04, "S1 直近安値(直下)",  group = gs)
+s2 = input.float(183.70, "S2 中間(Fib0.236)",  group = gs)
+s3 = input.float(183.17, "S3 期間安値",        group = gs)
+
+hline(r1 != 0.0 ? r1 : na, "R1", color = color.red,   linestyle = hline.style_dashed)
+hline(r2 != 0.0 ? r2 : na, "R2", color = color.red,   linestyle = hline.style_dotted)
+hline(r3 != 0.0 ? r3 : na, "R3", color = color.red,   linestyle = hline.style_dotted)
+hline(s1 != 0.0 ? s1 : na, "S1", color = color.green, linestyle = hline.style_dashed)
+hline(s2 != 0.0 ? s2 : na, "S2", color = color.green, linestyle = hline.style_dotted)
+hline(s3 != 0.0 ? s3 : na, "S3", color = color.green, linestyle = hline.style_dotted)
+
+// --- ブレイクアラート ---
+alertcondition(ta.crossover(close, r1),  title = "R1上抜け",     message = "EURJPY R1(184.55)を上抜け。上放れ候補。")
+alertcondition(ta.crossunder(close, s1), title = "S1割れ",       message = "EURJPY S1(184.04)を割れ。下放れ候補。")
+alertcondition(ta.crossover(close, r3),  title = "レンジ上放れ", message = "EURJPY レンジ上限(185.79)を上抜け。")
+alertcondition(ta.crossunder(close, s3), title = "レンジ下放れ", message = "EURJPY レンジ下限(183.17)を割れ。")
